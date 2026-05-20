@@ -51,7 +51,7 @@ function renderDashboard(data) {
   const kpiSusEl = document.getElementById('kpiSus');
   const kpiSusBadge = document.getElementById('kpiSusBadge');
   if (susVal != null) {
-    kpiSusEl.textContent = susVal.toFixed(1);
+    kpiSusEl.textContent = susVal.toFixed(2);
     const badge = getSusBadgeConfig(susVal);
     kpiSusBadge.textContent = badge.text;
     kpiSusBadge.className = `kpi-badge ${badge.class}`;
@@ -181,7 +181,7 @@ function renderDashboard(data) {
 
       html += `<tr>
         <td><strong>Participante ${i + 1}</strong></td>
-        <td><span class="${susColorClass}">${susScore != null ? susScore.toFixed(1) : '—'}</span></td>
+        <td><span class="${susColorClass}">${susScore != null ? susScore.toFixed(2) : '—'}</span></td>
         <td><span class="badge ${susScore >= 80 ? 'bg-success' : (susScore < 50 ? 'bg-danger' : 'bg-warning text-dark')}">${susFaixa}</span></td>
         <td><span class="${ueqColorClass}">${ueqScore != null ? ueqScore.toFixed(2) : '—'}</span></td>
         <td><span class="badge ${ueqScore > 0.8 ? 'bg-success' : (ueqScore < -0.8 ? 'bg-danger' : 'bg-warning text-dark')}">${ueqFaixa}</span></td>
@@ -443,7 +443,7 @@ function renderDashboard(data) {
       for (const c of headers) {
         const cls = getColumnClass(c);
         const val = row[c];
-        const formattedVal = (typeof val === 'number') ? val.toFixed(1) : (val ?? '');
+        const formattedVal = (typeof val === 'number') ? val.toFixed(2) : (val ?? '');
         html += `<td class="${cls}">${formattedVal}</td>`;
       }
       html += '</tr>';
@@ -475,7 +475,7 @@ function renderDashboard(data) {
         <span class="small text-truncate" style="max-width: 80%;" title="${question}">${question}</span>
         <span class="d-flex align-items-center">
           ${dimLabel}
-          <span class="fw-bold ms-2 ${mean >= 0.8 ? 'text-success' : (mean <= -0.8 ? 'text-danger' : 'text-warning')}">${mean.toFixed(3)}</span>
+          <span class="fw-bold ms-2 ${mean >= 0.8 ? 'text-success' : (mean <= -0.8 ? 'text-danger' : 'text-warning')}">${mean.toFixed(2)}</span>
         </span>
       </li>`;
     });
@@ -487,7 +487,7 @@ function renderDashboard(data) {
       summaryHtml += `<div class="col-sm-6 col-md-3 mb-2">
         <div class="bg-white p-2 border rounded text-center">
           <div class="small text-muted font-bold">${dim}</div>
-          <div class="fs-5 fw-bold ${mean >= 0.8 ? 'text-success' : (mean <= -0.8 ? 'text-danger' : 'text-warning')}">${mean.toFixed(3)}</div>
+          <div class="fs-5 fw-bold ${mean >= 0.8 ? 'text-success' : (mean <= -0.8 ? 'text-danger' : 'text-warning')}">${mean.toFixed(2)}</div>
         </div>
       </div>`;
     }
@@ -496,7 +496,7 @@ function renderDashboard(data) {
     summaryHtml += `
       <div class="mt-3 d-flex justify-content-between align-items-center border-top pt-3">
         <span><strong>Escore UEQ Geral:</strong></span>
-        <span class="fs-4 fw-bold ${ueqOverallVal >= 0.8 ? 'text-success' : (ueqOverallVal <= -0.8 ? 'text-danger' : 'text-warning')}">${ueqOverallVal != null ? ueqOverallVal.toFixed(3) : '—'}</span>
+        <span class="fs-4 fw-bold ${ueqOverallVal >= 0.8 ? 'text-success' : (ueqOverallVal <= -0.8 ? 'text-danger' : 'text-warning')}">${ueqOverallVal != null ? ueqOverallVal.toFixed(2) : '—'}</span>
       </div>
     `;
     ueqSummary.innerHTML = summaryHtml;
