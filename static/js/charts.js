@@ -394,7 +394,7 @@ function renderDashboard(data) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom', labels: { boxWidth: 15, font: { size: 13 } } }
         },
         scales: {
           y: {
@@ -403,8 +403,9 @@ function renderDashboard(data) {
             position: 'left',
             min: 0,
             max: 100,
-            title: { display: true, text: 'Pontuação SUS (0..100)', font: { weight: 'bold' } },
-            grid: { color: '#f1f5f9' }
+            title: { display: true, text: 'Pontuação SUS (0..100)', font: { weight: 'bold', size: 12 } },
+            grid: { color: '#f1f5f9' },
+            ticks: { font: { size: 11 } }
           },
           y1: {
             type: 'linear',
@@ -412,11 +413,13 @@ function renderDashboard(data) {
             position: 'right',
             min: -3,
             max: 3,
-            title: { display: true, text: 'Pontuação UEQ (-3..+3)', font: { weight: 'bold' } },
-            grid: { drawOnChartArea: false } // Only draw grid for left axis
+            title: { display: true, text: 'Pontuação UEQ (-3..+3)', font: { weight: 'bold', size: 12 } },
+            grid: { drawOnChartArea: false }, // Only draw grid for left axis
+            ticks: { font: { size: 11 } }
           },
           x: {
             ticks: {
+              font: { size: 11 },
               callback: function(val, index) {
                 // Shorten long labels on X axis to make it legible
                 const label = experiences[index];
@@ -428,7 +431,49 @@ function renderDashboard(data) {
             }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'correlationBarLabels',
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center';
+          
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            meta.data.forEach((bar, index) => {
+              const value = dataset.data[index];
+              if (value === null || value === undefined) return;
+              
+              let displayVal;
+              if (i === 0) {
+                displayVal = Number(value.toFixed(1)).toString();
+              } else {
+                displayVal = value.toFixed(2);
+              }
+              
+              const goesAbove = bar.y - 15 < chart.chartArea.top;
+              const isNegative = value < 0;
+              
+              if (isNegative) {
+                ctx.fillStyle = '#ef4444'; // Red for negative values
+                ctx.textBaseline = 'top';
+                ctx.fillText(displayVal, bar.x, bar.y + 4);
+              } else if (goesAbove) {
+                ctx.fillStyle = '#ffffff';
+                ctx.textBaseline = 'top';
+                ctx.fillText(displayVal, bar.x, bar.y + 6);
+              } else {
+                ctx.fillStyle = i === 0 ? '#4f46e5' : '#10b981'; // Slate-ish or blue/green
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(displayVal, bar.x, bar.y - 4);
+              }
+            });
+          });
+          ctx.restore();
+        }
+      }]
     });
   }
 
