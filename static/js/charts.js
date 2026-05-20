@@ -116,7 +116,37 @@ function renderDashboard(data) {
             grid: { display: false }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'barLabels',
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center';
+          
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            meta.data.forEach((bar, index) => {
+              const value = dataset.data[index];
+              if (value === null || value === undefined) return;
+              
+              const displayVal = Number(value.toFixed(1)).toString();
+              const goesAbove = bar.y - 15 < chart.chartArea.top;
+              if (goesAbove) {
+                ctx.fillStyle = '#ffffff';
+                ctx.textBaseline = 'top';
+                ctx.fillText(displayVal, bar.x, bar.y + 6);
+              } else {
+                ctx.fillStyle = '#475569'; // slate-600
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(displayVal, bar.x, bar.y - 4);
+              }
+            });
+          });
+          ctx.restore();
+        }
+      }]
     });
   }
 
@@ -160,7 +190,36 @@ function renderDashboard(data) {
             grid: { display: false }
           }
         }
-      }
+      },
+      plugins: [{
+        id: 'barLabels',
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          ctx.save();
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textBaseline = 'middle';
+          
+          chart.data.datasets.forEach((dataset, i) => {
+            const meta = chart.getDatasetMeta(i);
+            meta.data.forEach((bar, index) => {
+              const value = dataset.data[index];
+              if (value === null || value === undefined) return;
+              
+              const valStr = value.toFixed(2);
+              if (value >= 0) {
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#1e293b';
+                ctx.fillText(valStr, bar.x + 6, bar.y);
+              } else {
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#1e293b';
+                ctx.fillText(valStr, bar.x - 6, bar.y);
+              }
+            });
+          });
+          ctx.restore();
+        }
+      }]
     });
   }
 
@@ -213,7 +272,7 @@ function renderDashboard(data) {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+            legend: { position: 'bottom', labels: { boxWidth: 15, font: { size: 13 } } }
           }
         }
       });
