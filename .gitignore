@@ -1,0 +1,28 @@
+# Ambientes Virtuais
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache e Compilação
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de Dados Temporários e Bancos
+*.sqlite3
+*.db
+*.log

@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Análise SUS & UEQ - Dashboard de Pesquisa</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Premium Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- Premium Top Navigation -->
+    <nav class="navbar custom-navbar mb-4">
+      <div class="container-fluid d-flex justify-content-between align-items-center">
+        <span class="navbar-brand mb-0 h1 d-flex align-items-center gap-2">
+          <i class="bi bi-bar-chart-steps text-indigo-300"></i>
+          <span class="navbar-title">LegisDoc - Análise SUS & UEQ</span>
+        </span>
+        <span class="badge bg-light text-dark px-3 py-2 rounded-pill shadow-sm d-none d-sm-inline-block">
+          <i class="bi bi-journal-richtext text-primary me-1"></i> TCC - Resultados de Usabilidade
+        </span>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- File Upload Area -->
+      <div class="row">
+        <div class="col-12">
+          <div class="upload-container" id="uploadZone">
+            <i class="bi bi-cloud-arrow-up-fill upload-icon"></i>
+            <div class="upload-text">Fazer upload de um arquivo CSV de formulário</div>
+            <div class="upload-subtext">Arraste e solte o arquivo aqui ou clique para selecionar. (O padrão é carregado automaticamente)</div>
+            <input type="file" id="fileInput" accept=".csv">
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards Row -->
+      <div class="row mb-4 g-3">
+        <!-- 1. Total Participants -->
+        <div class="col-md-4 col-lg-2-4 col-sm-6">
+          <div class="kpi-card">
+            <span class="kpi-title">Participantes</span>
+            <div class="kpi-value" id="kpiParticipants">—</div>
+            <span class="kpi-badge bg-primary text-white mt-2">Amostragem</span>
+            <i class="bi bi-people-fill kpi-icon"></i>
+          </div>
+        </div>
+        <!-- 2. Average SUS Score -->
+        <div class="col-md-4 col-lg-2-4 col-sm-6">
+          <div class="kpi-card">
+            <span class="kpi-title">Média SUS</span>
+            <div class="kpi-value" id="kpiSus">—</div>
+            <span class="kpi-badge mt-2" id="kpiSusBadge">—</span>
+            <i class="bi bi-shield-check kpi-icon"></i>
+          </div>
+        </div>
+        <!-- 3. UEQ Pragmatic Quality -->
+        <div class="col-md-4 col-lg-2-4 col-sm-6">
+          <div class="kpi-card">
+            <span class="kpi-title">Qualidade Pragmática</span>
+            <div class="kpi-value" id="kpiPragmatic">—</div>
+            <span class="kpi-badge bg-info text-white mt-2">Clareza / Eficácia</span>
+            <i class="bi bi-ui-checks-grid kpi-icon"></i>
+          </div>
+        </div>
+        <!-- 4. UEQ Hedonic Quality -->
+        <div class="col-md-4 col-lg-2-4 col-sm-6">
+          <div class="kpi-card">
+            <span class="kpi-title">Qualidade Hedônica</span>
+            <div class="kpi-value" id="kpiHedonic">—</div>
+            <span class="kpi-badge bg-violet text-white mt-2" style="background-color: #8b5cf6 !important;">Inovação / Empolgação</span>
+            <i class="bi bi-rocket-takeoff kpi-icon"></i>
+          </div>
+        </div>
+        <!-- 5. UEQ Overall Mean -->
+        <div class="col-md-4 col-lg-2-4 col-sm-6">
+          <div class="kpi-card">
+            <span class="kpi-title">Média UEQ Geral</span>
+            <div class="kpi-value" id="kpiUeqOverall">—</div>
+            <span class="kpi-badge mt-2" id="kpiUeqBadge">—</span>
+            <i class="bi bi-star-fill kpi-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <ul class="nav nav-tabs custom-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="usability-tab" data-bs-toggle="tab" data-bs-target="#usability" type="button" role="tab"><i class="bi bi-cpu me-1"></i> Usabilidade (SUS & UEQ)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"><i class="bi bi-person-badge me-1"></i> Perfil dos Usuários</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="correlation-tab" data-bs-toggle="tab" data-bs-target="#correlation" type="button" role="tab"><i class="bi bi-bezier2 me-1"></i> Cruzamento de Dados</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="qualitative-tab" data-bs-toggle="tab" data-bs-target="#qualitative" type="button" role="tab"><i class="bi bi-chat-left-quote me-1"></i> Feedbacks Qualitativos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="transparency-tab" data-bs-toggle="tab" data-bs-target="#transparency" type="button" role="tab"><i class="bi bi-eye me-1"></i> Transparência de Cálculos</button>
+        </li>
+      </ul>
+
+      <!-- Tab Contents -->
+      <div class="tab-content" id="dashboardTabsContent">
+        
+        <!-- Tab 1: Usabilidade -->
+        <div class="tab-pane fade show active" id="usability" role="tabpanel">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-graph-bar text-primary"></i> SUS por Participante</h5>
+                <div class="chart-container">
+                  <canvas id="susHist"></canvas>
+                </div>
+                <div class="mt-3 p-3 bg-light rounded border">
+                  <strong>Média Geral SUS:</strong> <span id="susSummaryText" class="fw-bold">—</span>
+                  <p class="small text-muted mb-0 mt-1">Valores individuais ajustados de 0 a 100 baseados em resposta linear (resposta - 1).</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-graph-bar-horizontal text-success"></i> UEQ por Dimensão</h5>
+                <div class="chart-container">
+                  <canvas id="ueqDim"></canvas>
+                </div>
+                <div class="mt-3 p-3 bg-light rounded border">
+                  <strong>Dimensões Avaliadas:</strong>
+                  <p class="small text-muted mb-0 mt-1">Escala UEQ reduzida (-3 a +3). Acima de 0.8 indica avaliação positiva, abaixo de -0.8 avaliação negativa.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-clipboard-data text-info"></i> Resumo de Resultados Individuais</h5>
+                <div id="tableArea"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Perfil dos Usuários -->
+        <div class="tab-pane fade" id="profile" role="tabpanel">
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-pie-chart-fill text-primary"></i> Experiência com Sistemas Digitais</h5>
+                <div class="chart-container">
+                  <canvas id="digitalExpChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-question-circle text-warning"></i> Já utilizou o sistema atual?</h5>
+                <div class="chart-container">
+                  <canvas id="usedSystemChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-clock-history text-info"></i> Tempo de Uso do Sistema Atual</h5>
+                <div class="chart-container">
+                  <canvas id="systemTimeChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-activity text-success"></i> Frequência de Uso do Sistema Atual</h5>
+                <div class="chart-container">
+                  <canvas id="systemFreqChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Cruzamento de Dados -->
+        <div class="tab-pane fade" id="correlation" role="tabpanel">
+          <div class="row">
+            <div class="col-12">
+              <div class="dashboard-card">
+                <h5><i class="bi bi-bezier2 text-primary"></i> Média de Usabilidade (SUS & UEQ) por Experiência do Participante</h5>
+                <div class="chart-container" style="min-height: 380px;">
+                  <canvas id="correlationChart"></canvas>
+                </div>
+                <div class="mt-3 p-3 bg-light rounded border">
+                  <h6><i class="bi bi-info-circle-fill text-primary"></i> O que isso representa para o seu TCC?</h6>
+                  <p class="small text-muted mb-0">Este gráfico correlaciona a percepção de usabilidade (SUS e UEQ Geral) com a maturidade tecnológica do usuário. Isso é fundamental para justificar se o sistema é intuitivo inclusive para pessoas com pouca experiência digital (Iniciante vs. Avançado).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Comentários Qualitativos -->
+        <div class="tab-pane fade" id="qualitative" role="tabpanel">
+          <div class="row">
+            <!-- Positive Points -->
+            <div class="col-lg-6">
+              <div class="dashboard-card" style="border-top: 4px solid var(--success);">
+                <h5 class="text-success"><i class="bi bi-plus-circle-fill text-success"></i> Pontos Positivos Percebidos</h5>
+                <div class="feedback-container" id="positiveFeedbackArea"></div>
+              </div>
+            </div>
+            <!-- Suggested Improvements -->
+            <div class="col-lg-6">
+              <div class="dashboard-card" style="border-top: 4px solid var(--warning);">
+                <h5 class="text-warning"><i class="bi bi-exclamation-triangle-fill text-warning"></i> Melhorias Sugeridas</h5>
+                <div class="feedback-container" id="improvementsFeedbackArea"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Transparência -->
+        <div class="tab-pane fade" id="transparency" role="tabpanel">
+          <div class="dashboard-card">
+            <h5><i class="bi bi-calculator text-primary"></i> Métodos de Cálculo Adotados</h5>
+            <div class="p-3 bg-light rounded border mb-4">
+              <pre id="calcMethod" class="mb-0" style="white-space: pre-wrap; font-family: monospace; font-size: 0.85rem;"></pre>
+            </div>
+            
+            <h5 class="mt-4"><i class="bi bi-table text-info"></i> Tabelas de Respostas Brutas e Valores Adotados</h5>
+            
+            <div class="my-4">
+              <span class="badge bg-primary me-2"><i class="bi bi-circle-fill me-1"></i> Resposta Original (Formulário)</span>
+              <span class="badge bg-warning text-dark me-2"><i class="bi bi-circle-fill me-1"></i> Valor Convertido para Cálculo</span>
+              <span class="badge bg-success"><i class="bi bi-circle-fill me-1"></i> Indicadores Finais</span>
+            </div>
+
+            <h6 class="mt-3 fw-bold text-secondary">Tabela de Conversão SUS</h6>
+            <div id="rawSusTable" class="mb-4"></div>
+
+            <h6 class="mt-4 fw-bold text-secondary">Tabela de Conversão UEQ</h6>
+            <div id="rawUeqTable" class="mb-4"></div>
+
+            <h6 class="mt-4 fw-bold text-secondary">Médias de Detalhamento das Questões UEQ</h6>
+            <div id="ueqSummary" class="p-3 bg-white border rounded"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Interactive Dashboard Script -->
+    <script src="/static/js/charts.js"></script>
+  </body>
+</html>
