@@ -2,7 +2,7 @@
 
 Este projeto é uma ferramenta interativa e dinâmica baseada em **Python Flask**, **Pandas** e **Chart.js** projetada para analisar e exibir os resultados de usabilidade de formulários de avaliação utilizando as metodologias **SUS (System Usability Scale)** e **UEQ-S (User Experience Questionnaire Short)**.
 
-Desenvolvido especialmente para o Trabalho de Conclusão de Curso (TCC), o dashboard fornece um painel contemporâneo, responsivo e rico em dados para justificar cientificamente a qualidade da experiência do usuário no sistema **LegisDoc**.
+Desenvolvido especialmente para pesquisas de usabilidade e análise de dados, o dashboard fornece um painel contemporâneo, responsivo e rico em dados para justificar cientificamente a qualidade da experiência do usuário no sistema **LegisDoc**.
 
 ---
 
@@ -116,4 +116,4 @@ O servidor iniciará automaticamente em modo de desenvolvimento na porta `5000`.
 ---
 
 ## 🎓 Créditos e Licença
-Desenvolvido sob encomenda para validação empírica do protótipo **LegisDoc**. Destinado para fins acadêmicos e científicos (TCC).
+Desenvolvido sob encomenda para validação empírica do protótipo **LegisDoc**. Destinado para fins acadêmicos, científicos e pesquisas gerais de UX.
